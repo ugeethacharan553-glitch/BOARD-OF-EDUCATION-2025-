@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Board of Education – Examination Results</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+}
+.box {
+    max-width: 420px;
+    margin: 50px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+h2 { color: #003366; }
+input {
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #003366;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#result {
+    margin-top: 20px;
+    font-size: 15px;
+}
+.footer {
+    margin-top: 20px;
+    font-size: 12px;
+    color: gray;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>Board of Education</h2>
+<p>Examination Result Portal</p>
+
+<input type="text" id="hall" placeholder="Enter Hall Ticket Number">
+<input type="text" id="mobile" placeholder="Enter Registered Mobile Number">
+
+<button onclick="showResult()">View Result</button>
+
+<div id="result"></div>
+
+<button id="downloadBtn" onclick="downloadMemo()" style="display:none;">
+Download Marks Memo (PDF)
+</button>
+
+<div class="footer">
+© Board of Education | Official Result
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+function showResult() {
+    var hall = document.getElementById("hall").value.toUpperCase();
+    var mobile = document.getElementById("mobile").value;
+    var r = document.getElementById("result");
+
+    var data = {
+        "DI0002": {mobile:"8897021162", theory:17, viva:6},
+        "CH0003": {mobile:"8897021162", theory:11, viva:7},
+        "HA0004": {mobile:"8519875568", theory:11, viva:7},
+        "JA0005": {mobile:"7993769377", theory:10.5, viva:7},
+        "GN0006": {mobile:"9398078216", theory:12.5, viva:7.5},
+        "SA0007": {mobile:"8008464060", theory:8, viva:5}
+    };
+
+    if (data[hall] && data[hall].mobile === mobile) {
+        var total = data[hall].theory + data[hall].viva;
+
+        r.innerHTML = `
+        <div id="memo" style="text-align:left;">
+        <h3 style="text-align:center;">Board of Education</h3>
+        <p style="text-align:center;">Official Marks Memo</p>
+        <hr>
+        <p><b>Hall Ticket:</b> ${hall}</p>
+        <p><b>Theory Marks:</b> ${data[hall].theory}</p>
+        <p><b>Viva Marks:</b> ${data[hall].viva}</p>
+        <p><b>Total Marks:</b> ${total}</p>
+        <hr>
+        <p>Date of Issue: ${new Date().toLocaleDateString()}</p>
+        <p>Signature: __________________</p>
+        </div>
+        `;
+
+        document.getElementById("downloadBtn").style.display = "inline-block";
+    } else {
+        r.style.color = "red";
+        r.innerHTML = "Invalid Hall Ticket Number or Mobile Number";
+        document.getElementById("downloadBtn").style.display = "none";
+    }
+}
+
+function downloadMemo() {
+    html2pdf().from(document.getElementById("memo")).save("Marks_Memo.pdf");
+}
+</script>
+
+</body>
+</html>
